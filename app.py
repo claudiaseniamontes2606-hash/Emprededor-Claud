@@ -147,8 +147,8 @@ if rol == "👑 Administrador (Dueño)":
     
     # 1. Total Vendido
     cursor.execute("SELECT SUM(total) FROM ordenes WHERE fecha = ?", (fecha_filtro,))
-    resultado_v = cursor.fetchone()
-    total_vendido = resultado_v[0] if resultado_v and resultado_v[0] is not None else 0.0
+    res_v = cursor.fetchone()[0]
+    total_vendido = res_v if res_v is not None else 0.0
     
     # 2. Total Consumido (Costo de lo vendido)
     cursor.execute("""
@@ -158,13 +158,13 @@ if rol == "👑 Administrador (Dueño)":
         JOIN ordenes o ON d.orden_id = o.id
         WHERE o.fecha = ?
     """, (fecha_filtro,))
-    resultado_c = cursor.fetchone()
-    total_consumido = resultado_c[0] if resultado_c and resultado_c[0] is not None else 0.0
+    res_c = cursor.fetchone()[0]
+    total_consumido = res_c if res_c is not None else 0.0
     
     # 3. Total Gastado
     cursor.execute("SELECT SUM(monto) FROM gastos WHERE fecha = ?", (fecha_filtro,))
-    resultado_g = cursor.fetchone()
-    total_gastado = resultado_g[0] if resultado_g and resultado_g[0] is not None else 0.0
+    res_g = cursor.fetchone()[0]
+    total_gastado = res_g if res_g is not None else 0.0
     
     ganancia_neta = total_vendido - total_consumido - total_gastado
     
@@ -212,8 +212,7 @@ if rol == "👑 Administrador (Dueño)":
                     conn.commit()
                     st.success("Gasto registrado exitosamente.")
                 else:
-st.error("Verifica los datos del egreso.")
+                    st.error("Verifica los datos del egreso.")
 
-with tab3:
-st.subheader("Monitoreo de Transacciones")
-st.dataframe(pd.read_sql_query("SELECT * FROM ordenes", conn), use_container_width=True)
+    with tab3:
+        st.subheader("Monitoreo de Transacciones")
